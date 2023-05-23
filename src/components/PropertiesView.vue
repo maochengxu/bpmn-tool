@@ -4,7 +4,7 @@
         <div class="empty" v-else-if="selectedElements.length > 1">Only one element please</div>
         <div v-else>
             <fieldset class="element-item">
-                <label>id</label>
+                <label>ID </label>
                 <span>{{ element.id }}</span>
             </fieldset>
             <fieldset class="element-item">
@@ -12,13 +12,16 @@
                 <input :value="element.name" @change="(event) => changeField(event, 'name')" />
             </fieldset>
             <fieldset class="element-item">
-                <label>Info</label>
+                <label>Info Markdown</label>
                 <textarea
                     v-model="element.info"
                     @change="(event) => changeField(event, 'info')"
                     @click="(event) => parseMarkdown(event)"
                 ></textarea>
-                <div id="mdblock" v-html="markdownHtml"></div>
+            </fieldset>
+            <fieldset class="element-item">
+                <label>Info Preview</label>
+                <div class="preview" v-html="markdownHtml"></div>
             </fieldset>
             <fieldset class="element-item">
                 <label>Link</label>
@@ -59,6 +62,17 @@ export default {
                 element.value = e.newSelection[0]
                 console.log(toRaw(element.value))
                 setDefaultProperties()
+                let md = new MarkdownIt()
+                try {
+                    let value = element.value['info']
+                    console.log(value)
+                    if (value === undefined) {
+                        value = ' '
+                    }
+                    markdownHtml.value = md.render(value)
+                } catch (error) {
+                    console.log(error)
+                }
             })
             modeler.on('element.changed', (e: any) => {
                 const { element: currentElement } = e
@@ -76,7 +90,6 @@ export default {
             if (element.value) {
                 const { businessObject } = element.value
                 const { name, $attrs } = businessObject
-                // console.log($attrs.info)
                 element.value['name'] = name
                 element.value['link'] = $attrs.link
                 element.value['info'] = $attrs.info
@@ -124,7 +137,7 @@ export default {
     position: absolute;
     right: 0;
     top: 0;
-    width: 1000px;
+    width: 500px;
     background-color: #ffffff;
     border-color: rgba(0, 0, 0, 0.09);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.09);
