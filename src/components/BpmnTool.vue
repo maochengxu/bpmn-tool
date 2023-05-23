@@ -2,14 +2,16 @@
     <div class="containers">
         <div class="canvas" ref="mycanvas"></div>
         <!-- <div id="js-properties-panel" class="panel"></div> -->
-        <properties-view v-if="bpmnModeler" :modeler="bpmnModeler"></properties-view>
-        <import-xml @fileContent="handleFileContent"></import-xml>
+        <properties-panel v-if="bpmnModeler" :modeler="bpmnModeler"></properties-panel>
+        <div class="import-xml">
+            <import-xml @fileContent="handleFileContent"></import-xml>
+        </div>
         <ul class="buttons">
             <li>
-                <a ref="saveDiagramLink" href="javascript:" title="SaveBpmn">Save bpmn</a>
+                <a ref="saveDiagramLink" href="javascript:" title="SaveBpmn">Save BPMN</a>
             </li>
             <li>
-                <a ref="saveSvgLink" href="javascript:" title="SaveSvg">Save svg</a>
+                <a ref="saveSvgLink" href="javascript:" title="SaveSvg">Save SVG</a>
             </li>
         </ul>
     </div>
@@ -18,8 +20,9 @@
 <script lang="ts">
 import { ref, onMounted, defineComponent } from 'vue'
 import BpmnModeler from 'bpmn-js/lib/Modeler'
-import PropertiesView from './PropertiesView.vue'
+import PropertiesPanel from './CustomPropertiesPanel.vue'
 import ImportXml from './ImportExport/ImportXml.vue'
+// import { NButton } from 'naive-ui'
 // import { xmlStr } from './defaultXml.ts'
 // import {
 //   BpmnPropertiesPanelModule,
@@ -30,8 +33,9 @@ import ImportXml from './ImportExport/ImportXml.vue'
 export default defineComponent({
     name: 'BpmnTool',
     components: {
-        PropertiesView,
+        PropertiesPanel,
         ImportXml
+        // NButton
     },
 
     setup() {
@@ -59,7 +63,6 @@ export default defineComponent({
             if (xmlContent.value) {
                 createNewDiagram(xmlContent.value)
             }
-            // createNewDiagram();
             success()
         }
 
@@ -104,9 +107,6 @@ export default defineComponent({
         }
 
         const saveDiagram = async (done: any) => {
-            // bpmnModeler.value.saveXML({ format: true }, function (err: any, xml: any) {
-            //   done(err, xml);
-            // });
             try {
                 const result = await bpmnModeler.value.saveXML(
                     { format: true },
@@ -122,7 +122,6 @@ export default defineComponent({
         }
 
         const saveSvg = async (done: any) => {
-            // bpmnModeler.value.saveSVG(done);
             try {
                 const result = await bpmnModeler.value.saveSVG(done)
                 const { svg } = result
@@ -185,13 +184,15 @@ export default defineComponent({
 
 .buttons {
     position: absolute;
-    left: 200px;
-    bottom: 20px;
+    left: 2vw;
+    bottom: 30px;
+    padding-left: 0;
 }
 
 .buttons li {
     display: inline-block;
-    margin: 5px;
+    margin-right: 5px;
+    padding-left: 0;
 }
 
 .buttons li a {
@@ -207,5 +208,11 @@ export default defineComponent({
     color: #333;
     background: #fff;
     cursor: pointer;
+}
+
+.import-xml {
+    position: absolute;
+    left: 2vw;
+    bottom: 85px;
 }
 </style>

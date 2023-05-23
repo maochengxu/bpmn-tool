@@ -1,35 +1,36 @@
 <template>
     <div class="custom-properties-panel">
+        <div class="header">PROPERTIES PANEL</div>
         <div class="empty" v-if="selectedElements.length <= 0">Please choose one element</div>
         <div class="empty" v-else-if="selectedElements.length > 1">Only one element please</div>
         <div v-else>
-            <fieldset class="element-item">
-                <label>ID </label>
+            <div class="element-item">
+                <div class="label">ID</div>
                 <span>{{ element.id }}</span>
-            </fieldset>
-            <fieldset class="element-item">
-                <label>name</label>
+            </div>
+            <div class="element-item">
+                <div class="label">Name</div>
                 <input :value="element.name" @change="(event) => changeField(event, 'name')" />
-            </fieldset>
-            <fieldset class="element-item">
-                <label>Info Markdown</label>
+            </div>
+            <div class="element-item">
+                <div class="label">Information Markdown</div>
                 <textarea
                     v-model="element.info"
                     @change="(event) => changeField(event, 'info')"
                     @click="(event) => parseMarkdown(event)"
                 ></textarea>
-            </fieldset>
-            <fieldset class="element-item">
-                <label>Info Preview</label>
+            </div>
+            <div class="element-item">
+                <div class="label">Information Preview</div>
                 <div class="preview" v-html="markdownHtml"></div>
-            </fieldset>
-            <fieldset class="element-item">
-                <label>Link</label>
+            </div>
+            <div class="element-item">
+                <div class="label">Link</div>
                 <input :value="element.link" @change="(event) => changeField(event, 'link')" />
-            </fieldset>
-            <fieldset class="element-item">
-                <span class="link" @click="() => openLink(element.link)"> View </span>
-            </fieldset>
+                <button class="link" @click="() => openLink(element.link)" style="margin-top: 5px">
+                    View
+                </button>
+            </div>
         </div>
     </div>
 </template>
@@ -39,7 +40,7 @@ import { ref, onMounted, toRaw } from 'vue'
 import MarkdownIt from 'markdown-it'
 
 export default {
-    name: 'PropertiesView',
+    name: 'PropertiesPanel',
     props: {
         modeler: {
             type: Object,
@@ -65,7 +66,6 @@ export default {
                 let md = new MarkdownIt()
                 try {
                     let value = element.value['info']
-                    console.log(value)
                     if (value === undefined) {
                         value = ' '
                     }
@@ -135,16 +135,88 @@ export default {
 <style scoped>
 .custom-properties-panel {
     position: absolute;
-    right: 0;
-    top: 0;
+    right: 2vh;
+    top: 2vh;
     width: 500px;
+    max-height: 80vh;
     background-color: #ffffff;
     border-color: rgba(0, 0, 0, 0.09);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.09);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.327);
     padding: 20px;
+    border-radius: 2%;
+    overflow: auto;
+}
+.element-item {
+    border-color: gainsboro;
+    border-style: solid;
+    border-width: 0px;
+    padding: 10px;
+    margin-top: -1px;
 }
 
-#mdblock {
+.preview {
+    text-align: left;
+    margin-top: 0px;
+    padding-top: 0px;
+    border: 1px solid gainsboro;
+}
+
+.label {
+    font-size: 20px;
+    font-weight: 400;
+    text-align: left;
+    color: #0e1a48;
+}
+
+input {
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    padding: 7px 0px;
+    width: 475px;
+    font-size: 16px;
+    font-family: 'Avenir', Helvetica, Arial, sans-serif;
+}
+
+.header {
+    font-size: 25px;
+    font-weight: 400;
     text-align: center;
+    margin-bottom: 5px;
+    font-family: museo-sans-1, museo-sans-2, 'Helvetica Neue', sans-serif;
+    color: #0e1a48;
+}
+
+input:focus {
+    border-color: #4d5dee;
+    outline: 0;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
+}
+
+textarea {
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    padding: 7px 0px;
+    width: 475px;
+    height: 100px;
+    font-size: 16px;
+    font-family: 'Avenir', Helvetica, Arial, sans-serif;
+    resize: none;
+}
+
+textarea:focus {
+    border-color: #4d5dee;
+    outline: 0;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
+}
+
+button {
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    padding: 7px 0px;
+    width: 475px;
+    font-size: 16px;
+    font-family: 'Avenir', Helvetica, Arial, sans-serif;
 }
 </style>
