@@ -22,6 +22,7 @@ import { ref, onMounted, defineComponent } from 'vue'
 import BpmnModeler from 'bpmn-js/lib/Modeler'
 import PropertiesPanel from './CustomPropertiesPanel.vue'
 import ImportXml from './ImportExport/ImportXml.vue'
+import xmlDefault from '../mocks/diagram_deafult'
 // import { NButton } from 'naive-ui'
 // import { xmlStr } from './defaultXml.ts'
 // import {
@@ -62,6 +63,9 @@ export default defineComponent({
             })
             if (xmlContent.value) {
                 createNewDiagram(xmlContent.value)
+            }
+            else {
+                createNewDiagram(xmlDefault)
             }
             success()
         }
