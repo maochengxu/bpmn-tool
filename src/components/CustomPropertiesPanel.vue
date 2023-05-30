@@ -10,23 +10,53 @@
             </div>
             <div class="element-item">
                 <div class="label">Name</div>
-                <input :value="element.name" @change="(event) => changeField(event, 'name')" />
+                <input
+                    id="input"
+                    :value="element.name"
+                    @change="(event) => changeField(event, 'name')"
+                />
             </div>
-            <div class="element-item">
-                <div class="label">Information Markdown</div>
+            <div class="element-item" id="infoMd" style="display: none">
+                <div class="label" style="display: inline-block">Information Markdown</div>
+                <button
+                    style="display: inline-block; margin-left: 5px"
+                    @click="toggleDiv('infoMd', 'infoPre')"
+                >
+                    Show Preview
+                </button>
                 <textarea
                     v-model="element.info"
                     @change="(event) => changeField(event, 'info')"
                     @click="(event) => parseMarkdown(event)"
+                    style="margin-top: 2px"
                 ></textarea>
             </div>
-            <div class="element-item">
-                <div class="label">Information Preview</div>
+            <div class="element-item" id="infoPre">
+                <div class="label" style="display: inline-block">Information Preview</div>
+                <button
+                    style="display: inline-block; margin-left: 5px"
+                    @click="toggleDiv('infoPre', 'infoMd')"
+                >
+                    Show Markdown
+                </button>
                 <div class="preview" v-html="markdownHtml"></div>
             </div>
             <div class="element-item">
+                <div class="label" style="display:inline-block">Color</div>
+                <input
+                    type="color"
+                    :value="element.color"
+                    @change="(event) => changeField(event, 'color')"
+                    style="margin-left: 10px"
+                />
+            </div>
+            <div class="element-item">
                 <div class="label">Link</div>
-                <input :value="element.link" @change="(event) => changeField(event, 'link')" />
+                <input
+                    id="input"
+                    :value="element.link"
+                    @change="(event) => changeField(event, 'link')"
+                />
                 <button class="link" @click="() => openLink(element.link)" style="margin-top: 5px">
                     View
                 </button>
@@ -86,6 +116,20 @@ export default {
             })
         }
 
+        const toggleDiv = (divIdToHide: string, divIdToShow: string) => {
+            const divHide = document.getElementById(divIdToHide)
+            const divShow = document.getElementById(divIdToShow)
+            if (divHide && divShow) {
+                if (divHide.style.display === 'none') {
+                    divHide.style.display = 'block'
+                    divShow.style.display = 'none'
+                } else {
+                    divHide.style.display = 'none'
+                    divShow.style.display = 'block'
+                }
+            }
+        }
+
         const setDefaultProperties = () => {
             if (element.value) {
                 const { businessObject } = element.value
@@ -93,6 +137,7 @@ export default {
                 element.value['name'] = name
                 element.value['link'] = $attrs.link
                 element.value['info'] = $attrs.info
+                element.value['color'] = $attrs.color
             }
         }
 
@@ -106,6 +151,9 @@ export default {
             const value = event.target.value
             let properties: any = {}
             properties[type] = value
+            if (type === 'color') {
+                setColor(value)
+            }
             element.value[type] = value
             updateProperties(properties)
         }
@@ -120,13 +168,23 @@ export default {
             window.open(link, '_blank')
         }
 
+        const setColor = (value: string) => {
+            const { modeler } = props
+            const modeling = modeler.get('modeling')
+            modeling.setColor(toRaw(element.value), {
+                stroke: value,
+                fill: null
+            })
+        }
+
         return {
             selectedElements,
             element,
             markdownHtml,
             changeField,
             openLink,
-            parseMarkdown
+            parseMarkdown,
+            toggleDiv
         }
     }
 }
@@ -168,7 +226,7 @@ export default {
     color: #0e1a48;
 }
 
-input {
+#input {
     border: 1px solid #ccc;
     border-radius: 3px;
     padding: 7px 0px;
@@ -186,7 +244,7 @@ input {
     color: #0e1a48;
 }
 
-input:focus {
+#input:focus {
     border-color: #4d5dee;
     outline: 0;
     -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
@@ -211,7 +269,7 @@ textarea:focus {
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6);
 }
 
-button {
+.link {
     border: 1px solid #ccc;
     border-radius: 3px;
     padding: 7px 0px;
