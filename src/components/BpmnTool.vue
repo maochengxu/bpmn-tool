@@ -49,7 +49,10 @@ export default defineComponent({
         const init = () => {
             const canvasElement = mycanvas.value
             bpmnModeler.value = new BpmnModeler({
-                container: canvasElement
+                container: canvasElement,
+                keyboard: {
+                    bindTo: document
+                },
                 // propertiesPanel: {
                 //   parent: '#js-properties-panel'
                 // },
